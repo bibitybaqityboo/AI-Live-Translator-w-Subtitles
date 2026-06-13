@@ -42,12 +42,20 @@ For security reasons, API keys should **never** be hardcoded into the scripts or
 4. Save the file. The applications will automatically detect and load this key when you launch them.
 *(Note: Your `.env` file is safely ignored by default in the provided `.gitignore` file, so it will not be uploaded to GitHub).*
 
-## 🎧 Audio Routing (Virtual Cables)
-Because these apps listen to what your teammates are saying, you cannot simply have them listen to your "Desktop Audio." If they listened to your Desktop Audio, they would hear game sound effects, gunshots, and music, which ruins the translation.
+## 🛠️ Setup & Installation
 
-To fix this, you must install a free **Virtual Audio Cable** (like VB-Audio Cable).
-1. You set your Discord or Game Chat output to the **Virtual Cable Input**.
-2. You set the Translation App's listening microphone to the **Virtual Cable Output**.
-Now, the app *only* hears your teammates!
+### Option 1: Download Source Code (For Python Users)
+1. Click the green **"Code"** button at the top of this GitHub page and select **"Download ZIP"**.
+2. Extract the folder to your Desktop.
+3. Open a terminal or command prompt inside the folder and install the required libraries by running:
+   ```cmd
+   pip install -r requirements.txt
+   ```
 
-**Please navigate to the specific folder of the app you want to use and read its dedicated `README.md` for precise, step-by-step audio routing guides tailored to that app.**
+### Option 2: Standalone .exe (Coming Soon)
+If you do not have Python installed, check the **"Releases"** tab on the right side of the GitHub page to download the standalone `.exe` versions of these apps.
+
+### Audio Routing (Virtual Cables)
+Each application requires specific audio routing (using Virtual Audio Cables) to ensure there are no infinite audio loops or echoing while gaming. 
+
+**Please navigate to the specific folder of the app you want to use and read its dedicated `README.md` for precise setup instructions, required dependencies, and step-by-step audio routing guides.**
