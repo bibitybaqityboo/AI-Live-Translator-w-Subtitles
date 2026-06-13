@@ -1,25 +1,27 @@
 # Game Audio Translator
 
-This application uses the cloud-based Gemini API to listen to your teammates' voice chat and read the translated audio out loud to your headphones.
+This application uses the cloud-based Google Gemini API to listen to your teammates' voice chat and read the translated audio out loud to your headphones in real-time.
 
 ## 🛠️ Requirements
-- **Gemini API Key**: Required for cloud translation.
-- **VB-Audio Virtual Cable**: Required to capture Discord audio cleanly.
+- **Gemini API Key**: Set in the `.env` file in the root directory.
+- **VB-Audio Virtual Cable**: A free virtual audio cable required to isolate Discord audio from game audio.
 
 ## 🎧 Audio Routing Setup
 
+To capture your teammates' voices without capturing the game audio (like gunshots or background music):
+
 1. **Discord / Game Voice Chat Settings**
-   - **Output Device (Speaker)**: Set to `CABLE Input`
+   - **Output Device (Speaker)**: Set to `CABLE Input`. (This sends your teammates' voices down the virtual cable).
 
 2. **Windows Sound Control Panel**
-   - **`CABLE Output` (Recording Tab)**: Check "Listen to this device" and set it to your `Turtle Beach` headphones if you still want to hear your teammates' native voices alongside the AI translation.
+   - Open Windows Sound Settings > More Sound Settings > **Recording Tab**.
+   - Right-click `CABLE Output` > Properties > **Listen Tab**.
+   - **Check "Listen to this device"** and select your primary headphones/speakers from the dropdown list. *(This ensures you can still hear your teammates' original voices mixed with your game audio while the AI translates them).*
 
 3. **App Settings (Game Audio Translator)**
-   - **Microphone**: `cable output` (Listens to the teammates)
-   - **Output Device**: `turtle beach` (Where the AI translation plays)
-
-## 🚀 Usage
-Double-click `Game Audio Translator.bat`. Configure your Gemini API key in the settings gear icon.
+   - Click the settings gear icon in the app.
+   - **Microphone**: Type `cable output` (This tells the app to listen to the teammates).
+   - **Output Device**: Type the name of your primary headphones (e.g., `headphones`, `speakers`, `arctis`). (This is where the translated AI voice plays).
 
 ## 🖥️ Creating a Desktop Shortcut
 

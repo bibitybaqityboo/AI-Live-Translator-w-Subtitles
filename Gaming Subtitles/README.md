@@ -1,24 +1,26 @@
 # Gaming Subtitles
 
-This application uses the Gemini API to listen to your teammates and provide silent, real-time translated subtitles via an invisible, click-through overlay while you game.
+This application uses the lightning-fast Google Gemini API to listen to your teammates and provide silent, real-time translated subtitles via an invisible, click-through overlay while you game.
 
 ## 🛠️ Requirements
-- **Gemini API Key**: Required for cloud translation.
-- **VB-Audio Virtual Cable**: Required to capture Discord audio cleanly.
+- **Gemini API Key**: Set in the `.env` file in the root directory.
+- **VB-Audio Virtual Cable**: A free virtual audio cable required to isolate Discord audio from game audio.
 
 ## 🎧 Audio Routing Setup
 
+To capture your teammates' voices without capturing the game audio (like gunshots or background music):
+
 1. **Discord / Game Voice Chat Settings**
-   - **Output Device (Speaker)**: Set to `CABLE Input`
+   - **Output Device (Speaker)**: Set to `CABLE Input`. (This sends your teammates' voices down the virtual cable).
 
 2. **Windows Sound Control Panel**
-   - **`CABLE Output` (Recording Tab)**: Check "Listen to this device" and point it to your `Turtle Beach` headphones so you can still hear the original audio while reading the subtitles.
+   - Open Windows Sound Settings > More Sound Settings > **Recording Tab**.
+   - Right-click `CABLE Output` > Properties > **Listen Tab**.
+   - **Check "Listen to this device"** and select your primary headphones/speakers from the dropdown list. *(This ensures you can still hear your teammates' original voices mixed with your game audio while reading the subtitles).*
 
 3. **App Settings (Gaming Subtitles)**
-   - **Microphone**: `cable output` (Listens to the teammates)
-
-## 🚀 Usage
-Double-click `Gaming Subtitles.bat`. Use the built-in sliders to adjust subtitle size, color, and vertical position on your screen.
+   - Click the settings gear icon in the app.
+   - **Microphone**: Type `cable output` (This tells the app to listen to the teammates).
 
 ## 🖥️ Creating a Desktop Shortcut
 
