@@ -30,7 +30,8 @@ This repository contains four distinct applications, each tailored for a differe
 ## 🔑 Environment Variables & Setup (.env)
 The cloud-based applications in this suite rely on the Google Gemini API to perform lightning-fast, real-time translations. To authorize the app to use the API, you must provide your personal API key.
 
-For security reasons, API keys should **never** be hardcoded into the scripts or uploaded to GitHub. Instead, we use a hidden `.env` file.
+> [!WARNING]
+> For security reasons, API keys should **never** be hardcoded into the scripts or uploaded to GitHub. Instead, we use a hidden `.env` file.
 
 **How to set up your `.env` file:**
 1. Go to [Google AI Studio](https://aistudio.google.com/apikey) and generate a free API key.
@@ -40,7 +41,9 @@ For security reasons, API keys should **never** be hardcoded into the scripts or
    GEMINI_API_KEY=paste_your_api_key_here
    ```
 4. Save the file. The applications will automatically detect and load this key when you launch them.
-*(Note: Your `.env` file is safely ignored by default in the provided `.gitignore` file, so it will not be uploaded to GitHub).*
+
+> [!TIP]
+> Your `.env` file is safely ignored by default in the provided `.gitignore` file, so it will not be uploaded to GitHub.
 
 ## 🛠️ Setup & Installation
 
@@ -52,10 +55,13 @@ For security reasons, API keys should **never** be hardcoded into the scripts or
    pip install -r requirements.txt
    ```
 
-### Option 2: Standalone .exe (Coming Soon)
-If you do not have Python installed, check the **"Releases"** tab on the right side of the GitHub page to download the standalone `.exe` versions of these apps.
+### Option 2: Standalone .exe (Recommended for Gamers)
+If you do not have Python installed, simply navigate to the **"Releases"** tab on the right side of the GitHub page. You can download the standalone `.exe` versions of these apps and run them immediately—no installation required!
 
-### Audio Routing (Virtual Cables)
-Each application requires specific audio routing (using Virtual Audio Cables) to ensure there are no infinite audio loops or echoing while gaming. 
+### 🎧 Required Audio Software (Virtual Cables)
+Each application requires specific audio routing to ensure there are no infinite audio loops or echoing while gaming. You will need to download and install the free audio drivers below depending on which app you use:
+
+- [VB-Audio Virtual Cable (Free)](https://vb-audio.com/Cable/) - *Required for capturing teammates' voices without game audio.*
+- [VoiceMeeter (Free)](https://vb-audio.com/Voicemeeter/) - *Required for routing your own translated voice to Discord.*
 
 **Please navigate to the specific folder of the app you want to use and read its dedicated `README.md` for precise setup instructions, required dependencies, and step-by-step audio routing guides.**
