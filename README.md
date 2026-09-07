@@ -2,6 +2,8 @@
 
 A comprehensive suite of real-time AI translation tools designed for gaming, streaming, and Discord. This suite allows you to translate your own voice to other languages in real-time, and perfectly intercept and translate your teammates' voices into your preferred language via text-to-speech or a transparent click-through subtitle overlay.
 
+> **🖥️ Cross-Platform:** Works on both **Windows** and **macOS**. See the [Audio Setup](#-required-audio-software-virtual-cables) section below for platform-specific instructions.
+
 ## 🚀 Included Applications
 
 This repository contains four distinct applications, each tailored for a different use case:
@@ -61,7 +63,49 @@ If you do not have Python installed, simply navigate to the **"Releases"** tab o
 ### 🎧 Required Audio Software (Virtual Cables)
 Each application requires specific audio routing to ensure there are no infinite audio loops or echoing while gaming. You will need to download and install the free audio drivers below depending on which app you use:
 
+#### Windows
 - [VB-Audio Virtual Cable (Free)](https://vb-audio.com/Cable/) - *Required for capturing teammates' voices without game audio.*
 - [VoiceMeeter (Free)](https://vb-audio.com/Voicemeeter/) - *Required for routing your own translated voice to Discord.*
+
+#### macOS
+- [BlackHole (Free, Open Source)](https://github.com/ExistentialAudio/BlackHole) - *Virtual audio driver that replaces both VB-Cable and VoiceMeeter on Mac.*
+
+<details>
+<summary><b>📖 macOS Setup Guide (Click to expand)</b></summary>
+
+### Step 1: Install BlackHole
+```bash
+brew install blackhole-2ch
+```
+If you don't have Homebrew, install it first:
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+Alternatively, download the installer directly from the [BlackHole GitHub Releases](https://github.com/ExistentialAudio/BlackHole/releases).
+
+### Step 2: Create a Multi-Output Device (to hear audio + route it)
+1. Open **Audio MIDI Setup** (search for it in Spotlight with `Cmd + Space`).
+2. Click the **`+`** button in the bottom-left corner and select **"Create Multi-Output Device"**.
+3. Check **both** your headphones/speakers **and** `BlackHole 2ch`.
+4. Right-click the new Multi-Output Device and select **"Use This Device For Sound Output"**.
+
+This lets you hear your game audio while simultaneously routing a copy to BlackHole for the translator to capture.
+
+### Step 3: Configure Discord (for Live Voice Translator)
+1. Open Discord → Settings → Voice & Video.
+2. Set **Output Device** to your **Multi-Output Device**.
+3. The translator app will automatically detect BlackHole as the virtual cable.
+
+### Step 4: Configure the Translator Apps
+- The apps will automatically detect `BlackHole` as the virtual audio device on macOS.
+- If BlackHole is not detected, you can manually type `blackhole` into the device selection dropdown.
+
+> [!NOTE]
+> **macOS Subtitle Overlay:** The subtitle overlay works on macOS but uses a semi-transparent dark background instead of the fully invisible click-through overlay available on Windows. This is a limitation of macOS's window manager. The subtitles will still appear on top of your game in **Windowed Fullscreen** mode.
+
+> [!TIP]
+> **macOS Microphone Permissions:** The first time you run the app, macOS will ask for Microphone permission. Click **Allow** in the system popup, or go to **System Settings → Privacy & Security → Microphone** and enable it for Terminal/Python.
+
+</details>
 
 **Please navigate to the specific folder of the app you want to use and read its dedicated `README.md` for precise setup instructions, required dependencies, and step-by-step audio routing guides.**

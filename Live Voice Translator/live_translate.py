@@ -42,6 +42,78 @@ import pyaudio
 from google import genai
 from google.genai import types
 
+import tkinter as tk
+import threading
+import queue
+
+IS_WINDOWS = sys.platform == "win32"
+IS_MACOS = sys.platform == "darwin"
+
+if IS_WINDOWS:
+    import ctypes
+
+class OverlayController:
+    def __init__(self):
+        self.q = queue.Queue()
+        self.root = None
+        self.lbl = None
+        threading.Thread(target=self._run_gui, daemon=True).start()
+        
+    def _run_gui(self):
+        self.root = tk.Tk()
+        self.root.overrideredirect(True)
+        self.root.attributes("-topmost", True)
+        self.root.config(bg="black")
+        
+        w = self.root.winfo_screenwidth()
+        h = self.root.winfo_screenheight()
+        self.root.geometry(f"{w}x150+0+{h - 250}")
+        
+        if IS_WINDOWS:
+            # Windows: use transparent color key + click-through via Win32 API
+            self.root.attributes("-transparentcolor", "black")
+            self.root.update_idletasks()
+            hwnd = self.root.winfo_id()
+            try:
+                styles = ctypes.windll.user32.GetWindowLongW(hwnd, -20)
+                ctypes.windll.user32.SetWindowLongW(hwnd, -20, styles | 0x00000020 | 0x00080000)
+            except Exception:
+                pass
+        elif IS_MACOS:
+            # macOS: use native alpha transparency (no click-through API available)
+            self.root.attributes("-alpha", 0.85)
+            self.root.config(bg="gray10")
+        else:
+            # Linux/other: use alpha transparency
+            self.root.attributes("-alpha", 0.85)
+            
+        # Pick a cross-platform font: Impact on Windows, Helvetica Neue on macOS
+        font_family = "Impact" if IS_WINDOWS else "Helvetica Neue"
+        bg_color = "black" if IS_WINDOWS else "gray10"
+        
+        self.lbl = tk.Label(self.root, text="", font=(font_family, 42, "bold"),
+                            fg="yellow", bg=bg_color, wraplength=w-100)
+        self.lbl.pack(expand=True, fill="both")
+        
+        self._check_queue()
+        self.root.mainloop()
+        
+    def _check_queue(self):
+        try:
+            while True:
+                msg = self.q.get_nowait()
+                if self.lbl:
+                    self.lbl.config(text=msg)
+        except queue.Empty:
+            pass
+        if self.root:
+            self.root.after(50, self._check_queue)
+            
+    def update_text(self, text):
+        self.q.put(text)
+
+overlay = OverlayController()
+
 # ─── Audio constants ──────────────────────────────────────────────────────────
 FORMAT = pyaudio.paInt16       # 16-bit signed PCM
 CHANNELS = 1                   # mono
@@ -54,9 +126,14 @@ CHUNK_BYTES = CHUNK_SIZE * 2   # 3 200 bytes per chunk
 MODEL = "gemini-3.5-live-translate-preview"
 
 # ─── Device name keywords (case-insensitive matching) ─────────────────────────
-MIC_KEYWORD = "usb pnp audio"           # Your PNP microphone
+MIC_KEYWORD = "usb pnp audio"           # Your PNP microphone (fallback: default mic)
 HEADSET_KEYWORD = "turtle beach"        # Turtle Beach headset (speakers)
-VBCABLE_KEYWORD = "cable input"          # VB-CABLE virtual speaker
+
+# Virtual cable: VB-CABLE on Windows, BlackHole on macOS
+if IS_MACOS:
+    VBCABLE_KEYWORD = "blackhole"       # BlackHole virtual audio driver (macOS)
+else:
+    VBCABLE_KEYWORD = "cable input"     # VB-CABLE virtual speaker (Windows)
 
 # ─── ANSI helpers (for pretty console output) ─────────────────────────────────
 CYAN = "\033[96m"
@@ -168,6 +245,17 @@ async def receive_responses(session, cable_q: asyncio.Queue) -> None:
     Iterates over the streaming responses from Gemini.  Audio data is
     enqueued for VB-CABLE playback; transcripts are printed inline.
     """
+    last_text_time = asyncio.get_event_loop().time()
+    
+    async def clear_overlay():
+        nonlocal last_text_time
+        while True:
+            await asyncio.sleep(1)
+            if asyncio.get_event_loop().time() - last_text_time > 4.0:
+                overlay.update_text("")
+                
+    clear_task = asyncio.create_task(clear_overlay())
+    
     try:
         async for response in session.receive():
             sc = response.server_content
@@ -205,6 +293,9 @@ async def receive_responses(session, cable_q: asyncio.Queue) -> None:
                     f"{sc.output_transcription.text}",
                     flush=True,
                 )
+                # Update the Gaming HUD!
+                overlay.update_text(sc.output_transcription.text)
+                last_text_time = asyncio.get_event_loop().time()
 
         # If the receive loop exits normally (model finished), drain audio
         # queue to allow playback to complete gracefully.
@@ -212,6 +303,8 @@ async def receive_responses(session, cable_q: asyncio.Queue) -> None:
         pass
     except Exception as exc:
         print(f"{RED}✗ Receive error: {exc}{RESET}")
+    finally:
+        clear_task.cancel()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

@@ -46,3 +46,6 @@ desktop.ini
 # Temporary Audio Files
 temp_tts*.mp3
 temp_stt*.wav
+
+# Compiled Executables
+Releases/

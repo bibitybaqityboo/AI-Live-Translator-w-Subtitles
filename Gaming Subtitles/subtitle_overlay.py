@@ -15,7 +15,12 @@ from typing import Optional
 
 import customtkinter as ctk
 import tkinter as tk
-import ctypes
+
+IS_WINDOWS = sys.platform == "win32"
+IS_MACOS = sys.platform == "darwin"
+
+if IS_WINDOWS:
+    import ctypes
 
 try:
     from dotenv import load_dotenv
@@ -293,8 +298,16 @@ class SubtitleOverlay(tk.Toplevel):
         self.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}+0+0")
         self.overrideredirect(True)
         self.attributes('-topmost', True)
-        self.config(bg='black')
-        self.attributes('-transparentcolor', 'black')
+
+        if IS_WINDOWS:
+            self.config(bg='black')
+            self.attributes('-transparentcolor', 'black')
+        elif IS_MACOS:
+            self.config(bg='black')
+            self.attributes('-alpha', 0.85)
+        else:
+            self.config(bg='black')
+            self.attributes('-alpha', 0.85)
 
         self.canvas = tk.Canvas(self, bg='black', highlightthickness=0)
         self.canvas.pack(fill='both', expand=True)
@@ -302,6 +315,8 @@ class SubtitleOverlay(tk.Toplevel):
         self._make_click_through()
 
     def _make_click_through(self):
+        if not IS_WINDOWS:
+            return  # Click-through is Windows-only; macOS/Linux skip this
         self.update()
         hwnd = ctypes.windll.user32.GetParent(self.winfo_id())
         try:
